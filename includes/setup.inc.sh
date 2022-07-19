@@ -56,7 +56,7 @@ function download_pkg_file() {
 
 	cd ~/Downloads && \
 	curl -OL $pkg_file_url >/dev/stdout
-	if [ $? -ne 0]
+	if [ $? -ne 0 ]
 	then
 		msg=""
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
