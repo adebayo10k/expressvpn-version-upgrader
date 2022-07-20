@@ -24,7 +24,7 @@ This program has so far been tested only on 64-bit Ubuntu (20.04) Linux and with
 
 I suppose this program is a bit of a workaround, until expressvpn make their packages available from their ppa.
 
-So this program, written for bash, automates the update process. It is interactive. Only the actual install command (`dpkg -i`) needs sudo privilege, so it didn't seem reasonable to give the program to the root user. 
+So this program, written for bash, automates the update process. It is interactive. Only the actual `dpkg -i` install command needs `sudo` privilege, so it didn't seem reasonable to give the program to the root user. 
 
 The program completes the package version update from the command line in just a few seconds, prompting the user at several stages during the following sequence of events:
 
@@ -54,7 +54,7 @@ It is assumed that you're already using an activated instance of the expressvpn 
 
 In order to verify the downloaded package file, you'll also need have imported the expressvpn public key into your gpg keyring. A reasonably decent [guide to verifying package file authenticity](https://www.expressvpn.com/support/vpn-setup/pgp-for-linux/) is provided by expressvpn.
 
-NOTE: PGP AND GnuPG are effectively synonymous as far as I recall.
+NOTE: PGP and GnuPG are effectively synonymous as far as I recall.
 
 ## Installation
 
@@ -63,25 +63,16 @@ If you have all the above prerequisites covered, you're ready to clone, test, us
 This project includes the separate shared-functions-library repository as a submodule. The clone command must therefore include the `--recurse-submodules` option which will initialise and fetch changes from the submodule repository, like so...
 
 ``` bash
-git clone --recurse-submodules https://github.com/adebayo10k/shared-functions-library.git
+git clone --recurse-submodules https://github.com/adebayo10k/expressvpn-version-upgrader.git
 
 ```
 
-That done, you can either add a symbolic link file to your PATH that targets the expressvpn-version-upgrader.sh cloned executable, something like...
+That done, you can optionally create a symbolic link file in a directory in your `PATH` that targets your cloned expressvpn-version-upgrader.sh executable, something like...
 
 ```
 ln -s path-to-cloned-repo-root-directory/expressvpn-version-upgrader.sh ~/${USER}/bin/expressvpn-version-upgrader.sh
 ```
 
-... or just execute expressvpn-version-upgrader.sh from within its' cloned Git directory with...
-
-```
-cd path-to-cloned-repo-root-directory/
-./expressvpn-version-upgrader.sh
-```
-
-
-chmod?
 
 ## Configuration
 
@@ -100,9 +91,22 @@ Nothing to do with this project, but I've also configured my cron table with thi
 
 None.
 
+
 ## Running the Script
 
 Internet connectivity is required at runtime, as the program does a couple of cURLs to the expressvpn domain.
+
+If you've symlinked from a directory in your `PATH`, then just execute...
+``` bash
+expressvpn-version-upgrader.sh
+```
+
+... else, execute expressvpn-version-upgrader.sh from within your Git project root directory with...
+
+```
+cd path-to-cloned-repo-root-directory && \
+./expressvpn-version-upgrader.sh
+```
 
 ## Logging
 
