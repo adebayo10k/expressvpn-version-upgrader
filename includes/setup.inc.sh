@@ -6,11 +6,10 @@ function display_installed_version() {
 
 	echo && echo "Installed version:"
 	expressvpn -v 2>/dev/null
-	[ $? -eq 0 ] && echo || {\
-	msg="Problem: Cannot establish the version of your existing expressvpn package."
-	lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
-	}
-
+	[ $? -ne 0 ] &&  \
+	msg="Problem: Cannot establish the version of your existing expressvpn package." && \
+	lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg" || \
+	
 } # end function
 
 ########################################################
