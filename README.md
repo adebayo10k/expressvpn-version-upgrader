@@ -76,7 +76,7 @@ ln -s path-to-cloned-repo-root-directory/expressvpn-version-upgrader.sh ~/${USER
 
 ## Configuration
 
-The _pkg-regexes.inc.sh_ file lists the Linux flavour and CPU architectures that are apparently supported by expressvpn.
+The _pkg-regexes.inc.sh_ file lists the Linux flavour and Platforms/CPU architectures that are apparently supported by expressvpn.
 So far, this program has only been configured for the 64-bit Ubuntu client version, although I'm assuming that extending this should be pretty trivial.
 
 ### Configuration Side Note:
