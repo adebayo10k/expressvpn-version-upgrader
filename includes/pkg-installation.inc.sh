@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# This module is responsible for completing a package installation.
+########################################################
 # do the actual installation and then to verify it.
 function install_package(){
 
@@ -21,6 +22,8 @@ function install_package(){
 		msg="The install (dpkg -i) command FAILED. Exiting now..."
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 	fi
+
+    installed_pkg_file=$verified_pkg_file
 	
 } # end function
 

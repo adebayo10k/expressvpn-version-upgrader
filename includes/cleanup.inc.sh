@@ -1,11 +1,12 @@
 #!/bin/bash
-
+# This module is responsible for putting the host back into a state in which \
+# it was found, regarding downloaded files, program and system configurations.
 ########################################################
 
 # remove downloaded package file and restore original expressvpn preferences
 function cleanup_and_revert(){
 
-	if [ -f "$verified_pkg_file" ] && rm "$verified_pkg_file"
+	if [ -f "$installed_pkg_file" ] && rm "$installed_pkg_file"
 	then
 		echo "Upgrade package file has been cleaned up after use OK" && echo && sleep 1
 	else
@@ -22,7 +23,7 @@ function cleanup_and_revert(){
 function reconnect_expressvpn() {
 	
 	# if nmcli installed ...
-	sudo systemctl restart NetworkManager.service
+	sudo systemctl restart NetworkManager.service && expressvpn status
 	#[ $? -eq 0 ] && \
 	#expressvpn disconnect && expressvpn connect
 
@@ -31,7 +32,7 @@ function reconnect_expressvpn() {
 	# nmcli -t -f RUNNING general
 	# 
 	# report expressvpn status
-	expressvpn status
+	sleep 4 && expressvpn status
 
 } # end function
 
