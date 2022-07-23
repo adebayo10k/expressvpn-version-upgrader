@@ -61,9 +61,6 @@ function main(){
 	pkg_file_url=
 	identified_pkg_file=
 	verified_pkg_file=
-	declare -a downloaded_pkg_files=()
-	pkg_file_regex="^${downloads_dir}/(expressvpn_).*${pkg_arch_regex}${pkg_filename_ext_regex}$"
-	#installer_regex="^${downloads_dir}/(expressvpn_).*(\.deb)$"
 
 	#########################
 	# FUNCTION CALLS:

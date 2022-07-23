@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# This module is responsible for creating a condition from which \
+# a subsequent package installation can take place.
 ########################################################
 #
 function display_installed_version() {
@@ -8,7 +9,7 @@ function display_installed_version() {
 	expressvpn -v 2>/dev/null
 	[ $? -ne 0 ] &&  \
 	msg="Problem: Cannot establish the version of your existing expressvpn package." && \
-	lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg" || \
+	lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 	
 } # end function
 
@@ -21,11 +22,6 @@ function get_available_pkg_file_url() {
 	grep "href=\"https://www.expressvpn.works/clients/linux/expressvpn_[0-9\.-]*${pkg_arch_regex}${pkg_filename_ext_regex}\"" | \
 	sed 's/^.*href="//' | \
 	sed 's/".*//')
-
-	#pkg_file_url=$(cat ~/Downloads/expressvpn.html 2>&1 | \
-	#grep "href=\"https://www.expressvpn.works/clients/linux/expressvpn_[0-9\.-]*${pkg_arch_regex}${pkg_filename_ext_regex}\"" | \
-	#sed 's/^.*href="//' | \
-	#sed 's/".*//')
 
 	# test the retrieved url value:
 	if [ -n $pkg_file_url ] && [[ $pkg_file_url =~ $BASIC_URL_REGEX/$REL_FILEPATH_REGEX ]]
@@ -67,6 +63,8 @@ function download_pkg_file() {
 
 # check there's ONLY 1 package file,
 function identify_downloaded_pkg_file(){
+    local pkg_file_regex="^${downloads_dir}/(expressvpn_).*${pkg_arch_regex}${pkg_filename_ext_regex}$"
+    local declare -a downloaded_pkg_files=()
 	for file in "${downloads_dir}"/*
 	do
 		if [ -f  "${file}" ] && [[ $file =~ $pkg_file_regex ]]
