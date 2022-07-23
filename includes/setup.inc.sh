@@ -18,8 +18,8 @@ function display_installed_version() {
 function get_available_pkg_file_url() {
 
 	# filter-in the latest package file URL from the expressvpn linux downloads landing page.
-	pkg_file_url=$(curl -sL https://www.expressvpn.com/latest#linux  2>&1 | \
-	grep "href=\"https://www.expressvpn.works/clients/linux/expressvpn_[0-9\.-]*${pkg_arch_regex}${pkg_filename_ext_regex}\"" | \
+	pkg_file_url=$(curl -sL "$linux_pkg_dl_landing_page"  2>&1 | \
+	grep "$pkg_file_url_regex" | \
 	sed 's/^.*href="//' | \
 	sed 's/".*//')
 
@@ -63,7 +63,7 @@ function download_pkg_file() {
 
 # check there's ONLY 1 package file,
 function identify_downloaded_pkg_file(){
-    local pkg_file_regex="^${downloads_dir}/(expressvpn_).*${pkg_arch_regex}${pkg_filename_ext_regex}$"
+    local pkg_file_regex="^${downloads_dir}/(expressvpn_).*${pkg_arch_regex}${pkg_fn_ext_regex}$"
     local declare -a downloaded_pkg_files=()
 	for file in "${downloads_dir}"/*
 	do
