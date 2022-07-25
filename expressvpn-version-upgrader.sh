@@ -93,8 +93,6 @@ function main(){
 	# then to verify its' signature against the expressvpn public key
 	verify_downloaded_pkg_file
 
-	exit 0
-
 	# CALLS TO FUNCTIONS DECLARED IN pkg-installation.inc.sh
 	#==========================
 	# do, then verify the installation

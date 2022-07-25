@@ -18,7 +18,6 @@ function display_installed_version() {
 function get_available_pkg_file_url() {
 
 	# filter-in the latest package file URL from the expressvpn linux downloads landing page.
-	# 
 	case $detected_plat in
 		'U64') #Ubuntu 64-bit
 					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
@@ -80,60 +79,32 @@ function get_user_pkg_download_decision() {
 ########################################################
 # 
 function download_pkg_file() {
-
-	cd ~/Downloads && \
-	curl -OL "$pkg_file_url" "${pkg_file_url}.asc" >/dev/stdout 
+	# detatched signature file
+	pkg_sig_file_url="${pkg_file_url}.asc"
+	cd "$downloads_dir" && \
+	curl -OL "$pkg_file_url" >/dev/stdout && \
+	curl -sOL "$pkg_sig_file_url"
 	if [ $? -ne 0 ]
 	then
 		msg="cURL FAIL"
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 	fi
 
-	
 } # end function
 
 ########################################################
-
 # 
 function identify_downloaded_pkg_file(){
-	#local file_base
-#    local pkg_file_regex="^${downloads_dir}/(expressvpn_).*${pkg_arch_regex}${pkg_fn_ext_regex}$"
-#    local declare -a downloaded_pkg_files=()
-#	for file in "${downloads_dir}"/*
-#	do
-#		if [ -f  "${file}" ] && [[ $file =~ $pkg_file_regex ]]
-#		then
-#			echo "Found an expressvpn package file: ${file}" && echo
-#			# add file to an array
-#			downloaded_pkg_files+=("${file}")
-#		fi
-#	done
-#
-#	# report to user whether or not the expected, single upgrade file was found OK
-#	if [[ ${#downloaded_pkg_files[@]} -lt 1 ]]
-#	then
-#		msg="The package file has NOT been found. Exiting now..."
-#		lib10k_exit_with_error "$E_REQUIRED_FILE_NOT_FOUND" "$msg"
-#	elif [[ ${#downloaded_pkg_files[@]} -gt 1 ]]
-#	then
-#		msg="TOO MANY valid package files were found. MANUALLY DELETE redundant files. Exiting now..."
-#		lib10k_exit_with_error "$E_REQUIRED_FILE_NOT_FOUND" "$msg"
-#	else
-#		echo "${#downloaded_pkg_files[@]} package file was identified" && echo
-#	fi
-#
+
 	local pkg_file_regex="^${downloads_dir}/expressvpn[-_]{1}[0-9\.-]*.*(deb|rpm|xz)$"
 	for file in "${downloads_dir}"/*
 	do
-		#file_base=$(basename "$file")
-		
-		if [ -f  "$file" ] && [[ $file =~ $pkg_file_regex ]]
+		if [[ $file =~ $pkg_file_regex ]]
 		then
-			echo "Found an expressvpn package file: ${file}" && echo
+			echo && echo "Found an expressvpn package file: ${file}" && echo
+			identified_pkg_file="$file"
 		fi
 	done
-
-	identified_pkg_file="$file"	
 
 } # end function
 
@@ -146,16 +117,14 @@ function verify_downloaded_pkg_file(){
 	echo && echo -e "\e[32mNOW CHECKING package file AGAINST EXPRESSVPN PUBLIC KEY\e[0m" && echo
 	gpg --fingerprint release@expressvpn.com
 	gpg --verify "${identified_pkg_file}.asc" "$identified_pkg_file"
-
-	# TODO: identify downloaded detatched signature
-	# ... using detached signature....
-	# gpg --verify "signature.asc" "$identified_pkg_file"
-	# [ $? -eq 0 ] ...
-
-	echo
+	[ $? -eq 0 ] && \
+	echo && echo "GPG VERIFICATION PASSED OK, BUT AUTHORISE MANUALLY ANYWAY..." || \
+	echo || echo "GPG VERIFICATION FAILED!" || \
+	msg="GPG SIGNATURE VERIFICATION FAILED!"  || \
+	lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 
 	# Get user permission to proceed...
-	msg="\e[33mPress ENTER to confirm a Good signature\e[0m"
+	msg="\e[33mPress ENTER to confirm a \"Good signature\"\e[0m"
 	lib10k_get_user_permission_to_proceed "$msg"
 	[ $? -eq 0 ] || exit 0;
 

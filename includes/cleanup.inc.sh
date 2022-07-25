@@ -14,6 +14,7 @@ function cleanup_and_revert(){
 	fi
 
 	# revert any expressvpn preferences or configuration changes
+	# TODO:revert using previously parsed output of preferences subcommand
 	# cd back to original directory
 
 } # end function
@@ -22,8 +23,8 @@ function cleanup_and_revert(){
 #
 function reconnect_expressvpn() {
 	
-	# if nmcli installed ...
-	sudo systemctl restart NetworkManager.service && expressvpn status
+	# TODO:if nmcli installed ...
+	sudo systemctl restart NetworkManager.service
 	#[ $? -eq 0 ] && \
 	#expressvpn disconnect && expressvpn connect
 
@@ -32,7 +33,7 @@ function reconnect_expressvpn() {
 	# nmcli -t -f RUNNING general
 	# 
 	# report expressvpn status
-	sleep 4 && expressvpn status
+	#sleep 4 && expressvpn status
 
 } # end function
 
