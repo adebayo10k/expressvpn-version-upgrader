@@ -18,10 +18,42 @@ function display_installed_version() {
 function get_available_pkg_file_url() {
 
 	# filter-in the latest package file URL from the expressvpn linux downloads landing page.
-	pkg_file_url=$(curl -sL "$linux_pkg_dl_landing_page"  2>&1 | \
-	grep "$pkg_file_url_regex" | \
-	sed 's/^.*href="//' | \
-	sed 's/".*//')
+	# 
+	case $detected_plat in
+		'U64') #Ubuntu 64-bit
+					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
+					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn_[0-9\.-]*_amd64.deb" | \
+					sed 's/.*\(https\)/\1/; s/\(deb\).*/\1/')
+				;;
+	    'U32') #Ubuntu 32-bit
+					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
+					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn_[0-9\.-]*_i386.deb" | \
+					sed 's/.*\(https\)/\1/; s/\(deb\).*/\1/')
+				;;
+	    'F64') #Fedora 64-bit
+					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
+					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn-[0-9\.-]*.x86_64.rpm" | \
+					sed 's/.*\(https\)/\1/; s/\(rpm\).*/\1/')
+				;;
+	    'F32') #Fedora 32-bit
+					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
+					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn-[0-9\.-]*.i386.rpm" | \
+					sed 's/.*\(https\)/\1/; s/\(rpm\).*/\1/')
+				;;
+	    'A64') #Arch 64-bit
+					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
+					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn-[0-9\.-]*-x86_64.pkg.tar.xz" | \
+					sed 's/.*\(https\)/\1/; s/\(xz\).*/\1/')
+				;;
+	    'RPi') #Raspberry Pi OS
+					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
+					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn_[0-9\.-]*_armhf.deb" | \
+					sed 's/.*\(https\)/\1/; s/\(deb\).*/\1/')
+				;;
+		*)	   		msg="Unknown Linux Platform. Exiting now..."
+	           		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
+				;;
+	esac
 
 	# test the retrieved url value:
 	if [ -n $pkg_file_url ] && [[ $pkg_file_url =~ $BASIC_URL_REGEX/$REL_FILEPATH_REGEX ]]
@@ -39,7 +71,7 @@ function get_available_pkg_file_url() {
 #
 function get_user_pkg_download_decision() {
 
-	msg="Want to download it? If not just terminate this program..."
+	msg="Want to download the package and signature files? If not just terminate this program..."
 	lib10k_get_user_permission_to_proceed "$msg"
 	[ $? -eq 0 ] || exit 0
 
@@ -50,45 +82,58 @@ function get_user_pkg_download_decision() {
 function download_pkg_file() {
 
 	cd ~/Downloads && \
-	curl -OL $pkg_file_url >/dev/stdout
+	curl -OL "$pkg_file_url" "${pkg_file_url}.asc" >/dev/stdout 
 	if [ $? -ne 0 ]
 	then
-		msg=""
+		msg="cURL FAIL"
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 	fi
+
 	
 } # end function
 
 ########################################################
 
-# check there's ONLY 1 package file,
+# 
 function identify_downloaded_pkg_file(){
-    local pkg_file_regex="^${downloads_dir}/(expressvpn_).*${pkg_arch_regex}${pkg_fn_ext_regex}$"
-    local declare -a downloaded_pkg_files=()
+	#local file_base
+#    local pkg_file_regex="^${downloads_dir}/(expressvpn_).*${pkg_arch_regex}${pkg_fn_ext_regex}$"
+#    local declare -a downloaded_pkg_files=()
+#	for file in "${downloads_dir}"/*
+#	do
+#		if [ -f  "${file}" ] && [[ $file =~ $pkg_file_regex ]]
+#		then
+#			echo "Found an expressvpn package file: ${file}" && echo
+#			# add file to an array
+#			downloaded_pkg_files+=("${file}")
+#		fi
+#	done
+#
+#	# report to user whether or not the expected, single upgrade file was found OK
+#	if [[ ${#downloaded_pkg_files[@]} -lt 1 ]]
+#	then
+#		msg="The package file has NOT been found. Exiting now..."
+#		lib10k_exit_with_error "$E_REQUIRED_FILE_NOT_FOUND" "$msg"
+#	elif [[ ${#downloaded_pkg_files[@]} -gt 1 ]]
+#	then
+#		msg="TOO MANY valid package files were found. MANUALLY DELETE redundant files. Exiting now..."
+#		lib10k_exit_with_error "$E_REQUIRED_FILE_NOT_FOUND" "$msg"
+#	else
+#		echo "${#downloaded_pkg_files[@]} package file was identified" && echo
+#	fi
+#
+	local pkg_file_regex="^${downloads_dir}/expressvpn[-_]{1}[0-9\.-]*.*(deb|rpm|xz)$"
 	for file in "${downloads_dir}"/*
 	do
-		if [ -f  "${file}" ] && [[ $file =~ $pkg_file_regex ]]
+		#file_base=$(basename "$file")
+		
+		if [ -f  "$file" ] && [[ $file =~ $pkg_file_regex ]]
 		then
 			echo "Found an expressvpn package file: ${file}" && echo
-			# add file to an array
-			downloaded_pkg_files+=("${file}")
 		fi
 	done
 
-	# report to user whether or not the expected, single upgrade file was found OK
-	if [[ ${#downloaded_pkg_files[@]} -lt 1 ]]
-	then
-		msg="The package file has NOT been found. Exiting now..."
-		lib10k_exit_with_error "$E_REQUIRED_FILE_NOT_FOUND" "$msg"
-	elif [[ ${#downloaded_pkg_files[@]} -gt 1 ]]
-	then
-		msg="TOO MANY valid package files were found. MANUALLY DELETE redundant files. Exiting now..."
-		lib10k_exit_with_error "$E_REQUIRED_FILE_NOT_FOUND" "$msg"
-	else
-		echo "${#downloaded_pkg_files[@]} package file was identified" && echo
-	fi
-	
-	identified_pkg_file=${downloaded_pkg_files[0]}	
+	identified_pkg_file="$file"	
 
 } # end function
 
@@ -100,7 +145,7 @@ function verify_downloaded_pkg_file(){
 	# Now to verify the downloaded package file using an existing expressvpn public key
 	echo && echo -e "\e[32mNOW CHECKING package file AGAINST EXPRESSVPN PUBLIC KEY\e[0m" && echo
 	gpg --fingerprint release@expressvpn.com
-	gpg --verify "$identified_pkg_file"
+	gpg --verify "${identified_pkg_file}.asc" "$identified_pkg_file"
 
 	# TODO: identify downloaded detatched signature
 	# ... using detached signature....

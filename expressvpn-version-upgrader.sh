@@ -58,6 +58,7 @@ function main(){
 	actual_host=`hostname`
 	downloads_dir="$HOME/Downloads"
 
+	pkg_file_url=
 	identified_pkg_file=
 	verified_pkg_file=
 
@@ -67,7 +68,7 @@ function main(){
 	if [ ! $USER = 'root' ]
 	then
 		## Display a program header
-		lib10k_display_program_header "$program_title" "$original_author"
+		#lib10k_display_program_header "$program_title" "$original_author"
 		## check program dependencies and requirements
 		lib10k_check_program_requirements "${program_dependencies[@]}"
 	fi
@@ -75,7 +76,7 @@ function main(){
 	# check the number of parameters to this program
 	lib10k_check_no_of_program_args
 	# controls where this program can be run, to avoid unforseen behaviour
-	lib10k_entry_test
+	#lib10k_entry_test
 
 	# CALLS TO FUNCTIONS DECLARED IN setup.inc.sh
 	#==========================
@@ -91,6 +92,8 @@ function main(){
 	identify_downloaded_pkg_file
 	# then to verify its' signature against the expressvpn public key
 	verify_downloaded_pkg_file
+
+	exit 0
 
 	# CALLS TO FUNCTIONS DECLARED IN pkg-installation.inc.sh
 	#==========================
