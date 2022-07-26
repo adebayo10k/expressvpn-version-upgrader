@@ -70,7 +70,7 @@ function get_available_pkg_file_url() {
 #
 function get_user_pkg_download_decision() {
 
-	msg="Want to download the package and signature files? If not just terminate this program..."
+	msg="Want to download and verify the package and signature files?.."
 	lib10k_get_user_permission_to_proceed "$msg"
 	[ $? -eq 0 ] || exit 0
 
@@ -114,14 +114,16 @@ function identify_downloaded_pkg_file(){
 function verify_downloaded_pkg_file(){	
 
 	# Now to verify the downloaded package file using an existing expressvpn public key
-	echo && echo -e "\e[32mNOW CHECKING package file AGAINST EXPRESSVPN PUBLIC KEY\e[0m" && echo
+	echo && echo -e "\e[32mNow checking package file against expressvpn public key...\e[0m" && echo
 	gpg --fingerprint release@expressvpn.com
 	gpg --verify "${identified_pkg_file}.asc" "$identified_pkg_file"
-	[ $? -eq 0 ] && \
-	echo && echo "GPG VERIFICATION PASSED OK, BUT AUTHORISE MANUALLY ANYWAY..." || \
-	echo || echo "GPG VERIFICATION FAILED!" || \
-	msg="GPG SIGNATURE VERIFICATION FAILED!"  || \
-	lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
+	if [ $? -eq 0 ]
+	then
+		echo && echo "GPG VERIFICATION PASSED OK, BUT AUTHORISE MANUALLY ANYWAY..."
+	else
+		msg="GPG SIGNATURE VERIFICATION FAILED!"
+		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
+	fi
 
 	# Get user permission to proceed...
 	msg="\e[33mPress ENTER to confirm a \"Good signature\"\e[0m"
