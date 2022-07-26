@@ -2,23 +2,19 @@
 # This module is responsible for creating a condition from which \
 # a subsequent package installation can take place.
 ########################################################
-#
-function display_installed_version() {
+function check_for_installed_public_key() {
+	:
+} 
 
-	echo && echo "Installed version:"
-	expressvpn -v 2>/dev/null
-	[ $? -ne 0 ] &&  \
-	msg="Problem: Cannot establish the version of your existing expressvpn package." && \
-	lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
-	
-} # end function
+function get_user_platform_choice() {
+	:
+}
 
-########################################################
 # scrape the latest#linux webpage
 function get_available_pkg_file_url() {
 
 	# filter-in the latest package file URL from the expressvpn linux downloads landing page.
-	case $detected_plat in
+	case $user_selected_platform in
 		'U64') #Ubuntu 64-bit
 					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
 					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn_[0-9\.-]*_amd64.deb" | \

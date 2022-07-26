@@ -45,8 +45,6 @@ function main(){
 	#########################
 	# GLOBAL VARIABLE DECLARATIONS:
 	#########################
-	program_title="expressvpn version upgrader"
-	original_author="damola adebayo"
 	program_dependencies=("expressvpn" "gpg" "dpkg" "curl" "nmcli")
 
 	declare -i max_expected_no_of_program_parameters=0
@@ -67,21 +65,19 @@ function main(){
 	#########################
 	if [ ! $USER = 'root' ]
 	then
-		## Display a program header
-		#lib10k_display_program_header "$program_title" "$original_author"
 		## check program dependencies and requirements
 		lib10k_check_program_requirements "${program_dependencies[@]}"
 	fi
 	
 	# check the number of parameters to this program
 	lib10k_check_no_of_program_args
-	# controls where this program can be run, to avoid unforseen behaviour
-	#lib10k_entry_test
 
 	# CALLS TO FUNCTIONS DECLARED IN setup.inc.sh
 	#==========================
-	# display the currently installed version of expressvpn
-	display_installed_version
+	# no point going further if this state ...
+	check_for_installed_public_key
+	# user manually selects which ...
+	get_user_platform_choice
 	# retreive the url string for the latest package and compare with existing version.
 	get_available_pkg_file_url
 	# user manually decides whether to continue with or abandon package installation.

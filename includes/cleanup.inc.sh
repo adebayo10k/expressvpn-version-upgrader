@@ -16,6 +16,7 @@ function cleanup_and_revert(){
 	# revert any expressvpn preferences or configuration changes
 	# TODO:revert using previously parsed output of preferences subcommand
 	# cd back to original directory
+	# clean up both/all package and signature files
 
 } # end function
 

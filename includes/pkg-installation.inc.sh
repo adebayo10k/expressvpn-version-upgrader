@@ -8,16 +8,13 @@ function install_package(){
 	lib10k_get_user_permission_to_proceed "$msg"
 	[ $? -eq 0 ] || exit 0;
 
-	# TODO: temporarily change expressvpn preferences
+	# TODO: temporarily change expressvpn preferences?
 
 	sudo dpkg -i $verified_pkg_file
 	return_code=$?;
 	if [ $return_code -eq 0 ]
 	then
-		echo "THE UPGRADE WAS SUCCESSFUL!" && echo && sleep 1
-		echo "Here are the new version details:"
-		expressvpn -v
-		echo	
+		echo "THE UPGRADE WAS SUCCESSFUL." && echo
 	else
 		msg="The install (dpkg -i) command FAILED. Exiting now..."
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
