@@ -8,7 +8,7 @@ Reading around it seems that at time of writing, expressvpn doesn't yet deposit 
 
 Anyway, being a Linux user I prefer using their CLI program as my VPN client. Also, being a Linux user it's never long before I start trying to write scripts to automate stuff. This project is about automating the quite frequent process of updating to the latest client version.
 
-This program has so far been tested only on 64-bit Ubuntu (20.04) Linux and with its' default, built-in BASH interpreter.
+This program has so far been tested ONLY on 64-bit Ubuntu (20.04) Linux and with its' default, built-in BASH interpreter.
 
 ## Files
 - expressvpn-version-upgrader.sh - the main script file.
@@ -77,7 +77,7 @@ ln -s path-to-cloned-repo-root-directory/expressvpn-version-upgrader.sh ~/${USER
 ## Configuration
 
 The _pkg-regexes.inc.sh_ file lists the Linux flavour and Platforms/CPU architectures that are apparently supported by expressvpn.
-So far, this program has only been configured for the 64-bit Ubuntu client version, although I'm assuming that extending this should be pretty trivial.
+So far, this program has ONLY been configured for the 64-bit Ubuntu client version, although I'm assuming that extending this should be pretty trivial.
 
 ### Configuration Side Note:
 
@@ -106,6 +106,44 @@ expressvpn-version-upgrader.sh
 ```
 cd path-to-cloned-repo-root-directory && \
 ./expressvpn-version-upgrader.sh
+```
+
+### Important Note on Package Verification
+
+As mentioned, the program requires you to have imported expressvpn public key (I believe they call it their GPG Key), for use in verifying that the package is authentically from them. Verifying the downloaded package against an accompanying signature file additionally verifies that it hasn't changed since it left them.
+
+I decided that this program would not permit package installation without successful verification. It will terminate.
+
+The output you should see once you download the package should be like this...
+```
+Want to download the package and signature files? If not just terminate this program...
+Enter q to quit program NOW, or just press ENTER to continue.
+
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 18.5M  100 18.5M    0     0  2116k      0  0:00:08  0:00:08 --:--:-- 2634k
+
+Found an expressvpn package file: /home/user/Downloads/expressvpn_3.28.0.6-1_amd64.deb
+
+
+Now checking package file against expressvpn public key...
+
+pub   rsa4096 2016-01-22 [SC]
+      1D0B 09AD 6C93 FEE9 3FDD  BD9D AFF2 A141 5F6A 3A38
+uid           [ unknown] ExpressVPN Release <release@expressvpn.com>
+sub   rsa4096 2016-01-22 [E]
+
+gpg: Signature made Thu 07 Jul 2022 04:09:39 BST
+gpg:                using RSA key 1D0B09AD6C93FEE93FDDBD9DAFF2A1415F6A3A38
+gpg: Good signature from "ExpressVPN Release <release@expressvpn.com>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 1D0B 09AD 6C93 FEE9 3FDD  BD9D AFF2 A141 5F6A 3A38
+
+GPG VERIFICATION PASSED OK, BUT AUTHORISE MANUALLY ANYWAY...
+Press ENTER to confirm a "Good signature"
+Enter q to quit program NOW, or just press ENTER to continue.
 ```
 
 ## Logging
