@@ -3,7 +3,10 @@
 # a subsequent package installation can take place.
 ########################################################
 function check_for_installed_public_key() {
-	:
+	gpg --list-key | grep "release@expressvpn.com" >/dev/null 2>&1
+	[ $? -ne 0 ] && \
+	msg="IMPORTANT! The expressvpn Public Key MUST be installed. See https://www.expressvpn.com/support/vpn-setup/pgp-for-linux/" && \
+	lib10k_exit_with_error "$E_REQUIRED_FILE_NOT_FOUND" "$msg"
 } 
 
 function get_user_platform_choice() {
@@ -56,7 +59,7 @@ function get_available_pkg_file_url() {
 		echo "Available version URL:"
 		echo "$pkg_file_url" && echo
 	else
-		msg="Could not retrieve a valid package file URL. Exiting now..."
+		msg="Could not download a VALID package file URL string from web. Exiting now..."
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 	fi
 
