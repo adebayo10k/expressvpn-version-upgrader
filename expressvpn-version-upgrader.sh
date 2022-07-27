@@ -54,8 +54,7 @@ function main(){
 	
 	declare -a authorised_host_list=()
 	actual_host=`hostname`
-	downloads_dir="$HOME/Downloads"
-
+	
 	pkg_file_url=
 	identified_pkg_file=
 	verified_pkg_file=

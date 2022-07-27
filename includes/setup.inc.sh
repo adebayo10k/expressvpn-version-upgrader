@@ -66,7 +66,7 @@ function get_available_pkg_file_url() {
 #
 function get_user_pkg_download_decision() {
 
-	msg="Want to download and verify the package and signature files?.."
+	msg="Want to Download, Verify and Install this package?"
 	lib10k_get_user_permission_to_proceed "$msg"
 	[ $? -eq 0 ] || exit 0
 
@@ -89,16 +89,26 @@ function download_pkg_file() {
 } # end function
 
 ########################################################
-# 
+# identify both package installation and package signature files
 function identify_downloaded_pkg_file(){
 
-	local pkg_file_regex="^${downloads_dir}/expressvpn[-_]{1}[0-9\.-]*.*(deb|rpm|xz)$"
+	# identified_pkg_file must match both the general regex and specific pkg_file_url just requested
 	for file in "${downloads_dir}"/*
 	do
-		if [[ $file =~ $pkg_file_regex ]]
+		if [[ $file =~ $pkg_file_regex ]] && [[ ${file##*/} = ${pkg_file_url##*/} ]]
 		then
-			echo && echo "Found an expressvpn package file: ${file}" && echo
+			echo && echo "Found a Package Installation file: ${file}"
 			identified_pkg_file="$file"
+		fi
+	done
+
+	# identified_pkg_sig_file must match both the general regex and specific pkg_sig_file_regex just requested
+	for file in "${downloads_dir}"/*
+	do
+		if [[ $file =~ $pkg_sig_file_regex ]] && [[ ${file##*/} = ${pkg_sig_file_url##*/} ]]
+		then
+			echo && echo "Found a Package Signature file: ${file}" && echo
+			identified_pkg_sig_file="$file"
 		fi
 	done
 
@@ -115,14 +125,14 @@ function verify_downloaded_pkg_file(){
 	gpg --verify "${identified_pkg_file}.asc" "$identified_pkg_file"
 	if [ $? -eq 0 ]
 	then
-		echo && echo "GPG VERIFICATION PASSED OK, BUT AUTHORISE MANUALLY ANYWAY..."
+		echo && echo "GPG VERIFICATION SUCCESSFUL. AUTHORISE MANUALLY ANYWAY..."
 	else
 		msg="GPG SIGNATURE VERIFICATION FAILED!"
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 	fi
 
 	# Get user permission to proceed...
-	msg="\e[33mPress ENTER to confirm a \"Good signature\"\e[0m"
+	msg="\e[33mPress ENTER to confirm that you see \"Good signature\"\e[0m"
 	lib10k_get_user_permission_to_proceed "$msg"
 	[ $? -eq 0 ] || exit 0;
 
