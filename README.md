@@ -22,14 +22,16 @@ This program has so far been tested ONLY on 64-bit Ubuntu (20.04) Linux and with
 
 ## Purpose
 
-I suppose this program is a bit of a workaround, until expressvpn make their packages available from their ppa.
+This program is a bit of a workaround, until expressvpn make their packages available from their ppa.
+
+This program is only meant for a hobby and testing environment. It depends on things that expressvpn may change at any time.
 
 So this program, written for bash, automates the update process. It is interactive. Only the actual `dpkg -i` install command needs `sudo` privilege, so it didn't seem reasonable to give the program to the root user. 
 
 The program completes the package version update from the command line in just a few seconds, prompting the user at several stages during the following sequence of events:
 
 0. Quick check that the basic dependencies are installed.
-1. Display the currently installed expressvpn package version.
+1. Get user to select the OS platform on which the program is being tested.
 2. Retrieve the URL of the latest expressvpn package version from expressvpn.
 3. Download the latest expressvpn package file.
 4. GnuPG verify the downloaded expressvpn package file.
@@ -46,11 +48,11 @@ Unless part of the default Ubuntu Desktop build, the programs I chose to do the 
 
 ## Requirements
 
-To do any package install on your system, sudo privilege is required.
+To do any package install on your test system, sudo privilege is required.
 
 ## Prerequisites
 
-It is assumed that you're already using an activated instance of the expressvpn Ubuntu Linux client.
+It is assumed that you're already using an activated instance of an expressvpn VPN client.
 
 In order to verify the downloaded package file, you'll also need have imported the expressvpn public key into your gpg keyring. A reasonably decent [guide to verifying package file authenticity](https://www.expressvpn.com/support/vpn-setup/pgp-for-linux/) is provided by expressvpn.
 
@@ -76,7 +78,7 @@ ln -s path-to-cloned-repo-root-directory/expressvpn-version-upgrader.sh ~/${USER
 
 ## Configuration
 
-The _pkg-regexes.inc.sh_ file lists the Linux flavour and Platforms/CPU architectures that are apparently supported by expressvpn.
+The _pkg-regexes.inc.sh_ file contains the configuration parameters.
 So far, this program has ONLY been configured for the 64-bit Ubuntu client version, although I'm assuming that extending this should be pretty trivial.
 
 ### Configuration Side Note:
@@ -101,7 +103,7 @@ If you've symlinked from a directory in your `PATH`, then just execute...
 expressvpn-version-upgrader.sh
 ```
 
-... else, execute expressvpn-version-upgrader.sh from within your Git project root directory with...
+... else, execute from within your Git project root directory with...
 
 ```
 cd path-to-cloned-repo-root-directory && \
@@ -110,11 +112,11 @@ cd path-to-cloned-repo-root-directory && \
 
 ### Important Note on Package Verification
 
-As mentioned, the program requires you to have imported expressvpn public key (I believe they call it their GPG Key), for use in verifying that the package is authentically from them. Verifying the downloaded package against an accompanying signature file additionally verifies that it hasn't changed since it left them.
+As mentioned, the program requires you to have imported expressvpn _Public Key_ (I believe they call it their GPG Key), for use in verifying that the package is authentically from them. Verifying the downloaded package against an accompanying _signature_ file additionally verifies that it hasn't changed since it left them.
 
-I decided that this program would not permit package installation without successful verification. It will terminate.
+I decided that this program would not permit package installation without successful verification. It will just exit.
 
-The output you should see once you download the package should be like this...
+When testing, the output you should see once you download the package should be something like this...
 ```
 Want to download the package and signature files? If not just terminate this program...
 Enter q to quit program NOW, or just press ENTER to continue.
