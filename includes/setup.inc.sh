@@ -10,40 +10,126 @@ function check_for_installed_public_key() {
 } 
 
 function get_user_platform_choice() {
-	:
+	#
+	PS3='Select your OS Platform from the list : '
+
+	select platform in ${os_platforms[@]} 'None'
+	do
+		case $platform in 
+		"Ubuntu_64_bit")
+			echo && echo "You Selected the \"${platform}\" OS platform" && echo
+			user_selected_os_platform="$platform"
+			break
+			;;
+		"Ubuntu_32_bit")
+			echo && echo "You Selected the \"$platform\" OS platform." && echo
+			user_selected_os_platform="$platform"
+			break
+			;;
+		"Fedora_64_bit")
+			echo && echo "You Selected the \"$platform\" OS platform." && echo
+			user_selected_os_platform="$platform"
+			break
+			;;
+		"Fedora_32_bit")
+			echo && echo "You Selected the \"$platform\" OS platform." && echo
+			user_selected_os_platform="$platform"
+			break
+			;;
+		"Arch_64_bit")
+			echo && echo "You Selected the \"$platform\" OS platform." && echo
+			user_selected_os_platform="$platform"
+			break
+			;;
+		"Raspberry_Pi_OS")
+			echo && echo "You Selected the \"$platform\" OS platform. Nice! " && echo
+			user_selected_os_platform="$platform"
+			break
+			;;
+		'None')
+			echo && echo "You Selected \"$platform\". Cannot continue."
+			echo && exit 0 # END PROGRAM
+			;;
+		*) echo && echo "Invalid Selection. Integer [1 - $(( ${#os_platforms[@]} + 1 ))] Required. Try Again."
+			continue
+			;;
+		esac
+	done
+
+	os_not_tested
+}
+# temporary
+# TODO: Add a 'test' program parameter and advise on ALL.
+function os_not_tested() {
+
+	os_advisory0="Program not yet tested on the \"$platform\" OS platform."
+	os_advisory1="Please read the source, extend and test before trying in any production environment."
+
+	case $user_selected_os_platform in
+	"Ubuntu_64_bit")
+		;;
+	"Ubuntu_32_bit")
+		echo && echo "$os_advisory0"
+		echo "$os_advisory1" 
+		echo && exit 0
+		;;
+	"Fedora_64_bit")
+		echo && echo "$os_advisory0"
+		echo "$os_advisory1" 
+		echo && exit 0
+		;;
+	"Fedora_32_bit")
+		echo && echo "$os_advisory0"
+		echo "$os_advisory1" 
+		echo && exit 0
+		;;
+	"Arch_64_bit")
+		echo && echo "$os_advisory0"
+		echo "$os_advisory1" 
+		echo && exit 0
+		;;
+	"Raspberry_Pi_OS")
+		echo && echo "$os_advisory0" 
+		echo "$os_advisory1"
+		echo && exit 0
+		;;
+	*) msg="We shouldn't be here!"
+		lib10k_exit_with_error "$E_UNEXPECTED_BRANCH_ENTERED" "$msg"
+		;;
+	esac
 }
 
 # scrape the latest#linux webpage
 function get_available_pkg_file_url() {
 
 	# filter-in the latest package file URL from the expressvpn linux downloads landing page.
-	case $user_selected_platform in
-		'U64') #Ubuntu 64-bit
+	case $user_selected_os_platform in
+		'Ubuntu_64_bit') #Ubuntu 64-bit
 					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
 					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn_[0-9\.-]*_amd64.deb" | \
 					sed 's/.*\(https\)/\1/; s/\(deb\).*/\1/')
 				;;
-	    'U32') #Ubuntu 32-bit
+	    'Ubuntu_32_bit') #Ubuntu 32-bit
 					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
 					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn_[0-9\.-]*_i386.deb" | \
 					sed 's/.*\(https\)/\1/; s/\(deb\).*/\1/')
 				;;
-	    'F64') #Fedora 64-bit
+	    'Fedora_64_bit') #Fedora 64-bit
 					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
 					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn-[0-9\.-]*.x86_64.rpm" | \
 					sed 's/.*\(https\)/\1/; s/\(rpm\).*/\1/')
 				;;
-	    'F32') #Fedora 32-bit
+	    'Fedora_32_bit') #Fedora 32-bit
 					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
 					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn-[0-9\.-]*.i386.rpm" | \
 					sed 's/.*\(https\)/\1/; s/\(rpm\).*/\1/')
 				;;
-	    'A64') #Arch 64-bit
+	    'Arch_64_bit') #Arch 64-bit
 					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
 					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn-[0-9\.-]*-x86_64.pkg.tar.xz" | \
 					sed 's/.*\(https\)/\1/; s/\(xz\).*/\1/')
 				;;
-	    'RPi') #Raspberry Pi OS
+	    'Raspberry_Pi_OS') #Raspberry Pi OS
 					pkg_file_url=$(curl -s "https://www.expressvpn.com/latest#linux" | \
 					grep -m 1 "https://www.expressvpn.works/clients/linux/expressvpn_[0-9\.-]*_armhf.deb" | \
 					sed 's/.*\(https\)/\1/; s/\(deb\).*/\1/')
