@@ -12,13 +12,12 @@ function check_for_installed_public_key() {
 function get_user_platform_choice() {
 	#
 	PS3='Select your OS Platform from the list : '
-	
 
 	select platform in ${os_platforms[@]} 'None'
 	do
 		case $platform in 
 		"Ubuntu_64_bit")
-			echo && echo "You Selected the \"${platform}\" OS platform" && echo
+			echo && echo "You Selected the \"$platform\" OS platform." && echo
 			user_selected_os_platform="$platform"
 			break
 			;;
@@ -194,7 +193,7 @@ function download_pkg_file() {
 # identify both package installation and package signature files
 function identify_downloaded_pkg_file(){
 
-	# identified_pkg_file must match both the general regex and specific pkg_file_url just requested
+	# identified_pkg_file must match both the general pkg_file_regex and specific pkg_file_url just requested
 	for file in "${downloads_dir}"/*
 	do
 		if [[ $file =~ $pkg_file_regex ]] && [[ ${file##*/} = ${pkg_file_url##*/} ]]
@@ -204,7 +203,7 @@ function identify_downloaded_pkg_file(){
 		fi
 	done
 
-	# identified_pkg_sig_file must match both the general regex and specific pkg_sig_file_regex just requested
+	# identified_pkg_sig_file must match both the general pkg_sig_file_regex and specific pkg_sig_file_url just requested
 	for file in "${downloads_dir}"/*
 	do
 		if [[ $file =~ $pkg_sig_file_regex ]] && [[ ${file##*/} = ${pkg_sig_file_url##*/} ]]
