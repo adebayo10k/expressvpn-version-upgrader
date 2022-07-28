@@ -12,10 +12,11 @@ This program has so far been tested ONLY on 64-bit Ubuntu (20.04) Linux and with
 
 ## Files
 - expressvpn-version-upgrader.sh - the main script file.
-- includes/cleanup.inc.sh - included functions related to file cleanup and restoring.
-- includes/pkg-installation.inc.sh - included functions relating to the actual package installation.
-- includes/pkg-regexes.inc.sh - included text file listing of flavours of Linux supported by expressvpn.
+- includes/helper.inc.sh - functions to assist user with correct program use.
 - includes/setup.inc.sh - functions included to prepare for the install.
+- includes/pkg-installation.inc.sh - included functions relating to the actual package installation.
+- includes/pkg-regexes.inc.sh - file with some configuration variables.
+- includes/cleanup.inc.sh - included functions related to file cleanup and restoring.
 
 - shared-functions-library/shared-bash-constants.inc.sh - common module.
 - shared-functions-library/shared-bash-functions.inc.sh - common module.
@@ -78,7 +79,7 @@ ln -s path-to-cloned-repo-root-directory/expressvpn-version-upgrader.sh ~/${USER
 
 ## Configuration
 
-The _pkg-regexes.inc.sh_ file contains the configuration parameters.
+The _pkg-regexes.inc.sh_ file contains some configuration parameters.
 So far, this program has ONLY been configured for the 64-bit Ubuntu client version, although I'm assuming that extending this should be pretty trivial.
 
 ### Configuration Side Note:

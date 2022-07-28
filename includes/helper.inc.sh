@@ -51,20 +51,3 @@ _EOF
 exit 0
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## function calls (even to library functions) here
-
-
