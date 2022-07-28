@@ -12,6 +12,7 @@ function check_for_installed_public_key() {
 function get_user_platform_choice() {
 	#
 	PS3='Select your OS Platform from the list : '
+	
 
 	select platform in ${os_platforms[@]} 'None'
 	do
@@ -58,39 +59,51 @@ function get_user_platform_choice() {
 
 	os_not_tested
 }
-# temporary
-# TODO: Add a 'test' program parameter and advise on ALL.
-function os_not_tested() {
 
-	os_advisory0="Program not yet tested on the \"$platform\" OS platform."
-	os_advisory1="Please read the source, extend and test before trying in any production environment."
+function os_not_tested() {
+	run_mode=${run_mode:-'default'}
+	os_advisory0="This program has not been tested on the \"$platform\" OS platform."
+	os_advisory1="Read the source, extend and test if you wish."
+	os_advisory2="This program is an interesting workaround, but cannot be relied upon in any sort of production environment."
 
 	case $user_selected_os_platform in
-	"Ubuntu_64_bit")
+	"Ubuntu_64_bit") 
+		if [ -n $run_mode ] && [ $run_mode != 'dev' ]
+		then
+			echo && echo 
+			echo "$os_advisory1"
+			echo "$os_advisory2" 
+			echo && exit 0
+		fi
 		;;
 	"Ubuntu_32_bit")
 		echo && echo "$os_advisory0"
-		echo "$os_advisory1" 
+		echo "$os_advisory1"
+		echo "$os_advisory2" 
 		echo && exit 0
 		;;
 	"Fedora_64_bit")
 		echo && echo "$os_advisory0"
-		echo "$os_advisory1" 
+		echo "$os_advisory1"
+		echo "$os_advisory2" 
 		echo && exit 0
 		;;
 	"Fedora_32_bit")
 		echo && echo "$os_advisory0"
-		echo "$os_advisory1" 
+		echo "$os_advisory1"
+		echo "$os_advisory2" 
 		echo && exit 0
 		;;
 	"Arch_64_bit")
 		echo && echo "$os_advisory0"
-		echo "$os_advisory1" 
+		echo "$os_advisory1"
+		echo "$os_advisory2" 
 		echo && exit 0
 		;;
 	"Raspberry_Pi_OS")
 		echo && echo "$os_advisory0" 
 		echo "$os_advisory1"
+		echo "$os_advisory2"
 		echo && exit 0
 		;;
 	*) msg="We shouldn't be here!"

@@ -2,10 +2,8 @@
 #: Title				:expressvpn-version-upgrader.sh
 #: Date					:2021-01-26
 #: Author				: "Damola Adebayo" <adebayo10k@domain.com>
-#: Description	:use to securely update this frequently upgraded, 
+#: Description	:use to safely update this frequently upgraded, 
 #: Description	:not apt- or snap- package managed program 
-
-## THIS STUFF NEEDS TO EXECUTE BEFORE MAIN FUNCTION CALL:
 
 command_fullpath="$(readlink -f $0)" 
 command_basename="$(basename $command_fullpath)"
@@ -25,6 +23,8 @@ else
 	exit 1
 fi
 
+### Library functions have now been read-in ###
+
 # verify existence of included dependencies
 if [ -d "${command_dirname}/includes" ] && \
 [ -n "$(ls ${command_dirname}/includes)" ]
@@ -34,42 +34,27 @@ then
 		source "$file"
 	done
 else
-	# return a non-zero exit code with native exit
-	echo "Required file not found. Returning non-zero exit code. Exiting now..."
-	exit 1
+	msg="Required file not found. Returning non-zero exit code. Exiting now..."
+	lib10k_exit_with_error "$E_REQUIRED_FILE_NOT_FOUND" "$msg"
 fi
 
-## THAT STUFF JUST HAPPENED (EXECUTED) BEFORE MAIN FUNCTION CALL!
+### Included file functions have now been read-in ###
+
+# CALLS TO FUNCTIONS DECLARED IN helper.inc.sh
+#==========================
+check_all_program_conditions
 
 function main(){
 	#########################
 	# GLOBAL VARIABLE DECLARATIONS:
-	#########################
-	program_dependencies=("expressvpn" "gpg" "dpkg" "curl" "nmcli")
-
-	declare -i max_expected_no_of_program_parameters=0
-	declare -i min_expected_no_of_program_parameters=0
-	declare -ir actual_no_of_program_parameters=$#
-	all_the_parameters_string="$@"
-	
-	declare -a authorised_host_list=()
-	actual_host=`hostname`
-	
+	#########################		
 	pkg_file_url=
 	identified_pkg_file=
 	verified_pkg_file=
 
 	#########################
 	# FUNCTION CALLS:
-	#########################
-	if [ ! $USER = 'root' ]
-	then
-		## check program dependencies and requirements
-		lib10k_check_program_requirements "${program_dependencies[@]}"
-	fi
-	
-	# check the number of parameters to this program
-	lib10k_check_no_of_program_args
+	#########################	
 
 	# CALLS TO FUNCTIONS DECLARED IN setup.inc.sh
 	#==========================
@@ -99,7 +84,6 @@ function main(){
 	cleanup_and_revert
 	# try to restart expressvpn
 	reconnect_expressvpn
-
 
 } # end main
 
