@@ -1,11 +1,15 @@
 #!/bin/bash
 # This module is responsible for completing a package installation.
-# do the actual installation and then to verify it.
 function install_package(){
-
-	msg="Press ENTER to proceed with Package Installation (requires sudo)..."
-	lib10k_get_user_permission_to_proceed "$msg"
-	[ $? -eq 0 ] || exit 0;
+	# Get user permission to proceed...
+	question_string='Proceed with Package Installation? (requires sudo). Enter Number'
+	responses_string='Yes(Install) No(Quit)'
+	get_user_binary_exclusive_response "$question_string" "$responses_string"
+	user_response_code="$?"
+	# affirmative case
+	[ "$user_response_code" -eq 1 ] && echo && echo "Installing..." && echo
+	# negative case || unexpected case
+	[ "$user_response_code" -ne 1 ] && exit 0
 
 	sudo dpkg -i $verified_pkg_file
 	return_code=$?;
@@ -17,7 +21,6 @@ function install_package(){
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 	fi
 
-    installed_pkg_file=$verified_pkg_file
-	
+    installed_pkg_file=$verified_pkg_file	
 } # end function
 

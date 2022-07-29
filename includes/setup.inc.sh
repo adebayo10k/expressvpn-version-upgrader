@@ -11,7 +11,7 @@ function check_for_installed_public_key() {
 
 function get_user_platform_choice() {
 	#
-	PS3='Select your OS Platform from the list : '
+	PS3='Select your OS Platform to check online for VPN client updates (or choose None): '
 
 	select platform in ${os_platforms[@]} 'None'
 	do
@@ -111,9 +111,8 @@ function os_not_tested() {
 	esac
 }
 
-# If package information is available from apt-cache...
+# Try to get package information from apt-cache...
 function get_currently_installed_pkg_version(){
-
 	if [ $user_selected_os_platform = 'Ubuntu_64_bit' ]
 	then
 		if ( which apt >/dev/null 2>&1 )
@@ -181,30 +180,28 @@ function get_available_pkg_file_url() {
 				;;
 	esac
 
-	# test the retrieved url value:
+	# test the url string value from the https response:
 	if [ -n $pkg_file_url ] && [[ $pkg_file_url =~ $BASIC_URL_REGEX/$REL_FILEPATH_REGEX ]]
 	then
 		echo "Available version URL:"
 		echo "$pkg_file_url" && echo
+		# get users' decision whether to progress from here
+		question_string='Download and Verify this package? Enter Number'
+		responses_string='Yes(Continue) No(Quit)'
+		get_user_binary_exclusive_response "$question_string" "$responses_string"
+		user_response_code="$?"
+		# affirmative case
+		[ "$user_response_code" -eq 1 ] && echo && echo "Downloading and Verifying..." && echo
+		# negative case || unexpected case
+		[ "$user_response_code" -ne 1 ] && exit 0
 	else
 		msg="Could not download a VALID package file URL string from web. Exiting now..."
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 	fi
-
 } # end function
 
 ########################################################
-#
-function get_user_pkg_download_decision() {
-
-	msg="Want to Download, Verify and Install this package?"
-	lib10k_get_user_permission_to_proceed "$msg"
-	[ $? -eq 0 ] || exit 0
-
-} # end function
-
-########################################################
-# 
+# download package installation and package signature files
 function download_pkg_file() {
 	# detatched signature file
 	pkg_sig_file_url="${pkg_file_url}.asc"
@@ -216,13 +213,11 @@ function download_pkg_file() {
 		msg="cURL FAIL"
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 	fi
-
 } # end function
 
 ########################################################
 # identify both package installation and package signature files
 function identify_downloaded_pkg_file(){
-
 	# identified_pkg_file must match both the general pkg_file_regex and specific pkg_file_url just requested
 	for file in "${downloads_dir}"/*
 	do
@@ -242,33 +237,33 @@ function identify_downloaded_pkg_file(){
 			identified_pkg_sig_file="$file"
 		fi
 	done
-
 } # end function
 
 ########################################################
-
 # gpg verify signature of identified package file
-function verify_downloaded_pkg_file(){	
-
+function verify_downloaded_pkg_file(){
 	# Now to verify the downloaded package file using an existing expressvpn public key
 	echo && echo -e "\e[32mNow checking package file against expressvpn public key...\e[0m" && echo
 	gpg --fingerprint release@expressvpn.com
 	gpg --verify "${identified_pkg_file}.asc" "$identified_pkg_file"
 	if [ $? -eq 0 ]
 	then
-		echo && echo "GPG VERIFICATION SUCCESSFUL. AUTHORISE MANUALLY ANYWAY..."
+		echo && echo "GPG VERIFICATION SUCCESSFUL. CONFIRM VISUALLY ANYWAY..." && echo
+		# Get user permission to proceed...
+		question_string='Confirm? Do you see "Good signature"? Enter Number'
+		responses_string='Yes(Confirmed) No(Quit)'
+		get_user_binary_exclusive_response "$question_string" "$responses_string"
+		user_response_code="$?"
+		# affirmative case
+		[ "$user_response_code" -eq 1 ] && echo && echo "Continuing..." && echo
+		# negative case || unexpected case
+		[ "$user_response_code" -ne 1 ] && exit 0
 	else
 		msg="GPG SIGNATURE VERIFICATION FAILED!"
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 	fi
 
-	# Get user permission to proceed...
-	msg="\e[33mPress ENTER to confirm that you see \"Good signature\"\e[0m"
-	lib10k_get_user_permission_to_proceed "$msg"
-	[ $? -eq 0 ] || exit 0;
-
 	verified_pkg_file="$identified_pkg_file"
-
 } # end function
 
 ########################################################

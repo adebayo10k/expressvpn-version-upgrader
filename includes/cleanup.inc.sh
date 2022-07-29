@@ -1,41 +1,47 @@
 #!/bin/bash
 # This module is responsible for putting the host back into a state in which \
-# it was found, regarding downloaded files, program and system configurations.
+# it was found, regarding downloaded files.
 ########################################################
 
-# remove downloaded package and signature files, and restore original expressvpn preferences
+# remove downloaded package installation and signature files.
 function cleanup_and_revert() {
-
 	while :
 	do
-		msg0="Remove the old Package and Signature file downloads? (recommended)"
-		msg1="Enter [Y/n]"
-		lib10k_get_user_response "$msg0" "$msg1"
+		# Get user permission to proceed...
+		question_string='Interactively Delete old Package and Signature file downloads? (recommended). Enter Number'
+		responses_string='Yes(Delete) No(Skip)'
+		get_user_binary_exclusive_response "$question_string" "$responses_string"
 		user_response_code="$?"
-		[ "$user_response_code" -eq 2 ] && remove_pkg_files && break # yes; break while
-		[ "$user_response_code" -eq 3 ] &&  break # no; break while
+		# affirmative case
+		[ "$user_response_code" -eq 1 ] && echo "Continuing..." && remove_pkg_files && break
+		# negative case || unexpected case
+		[ "$user_response_code" -ne 1 ] &&  break
 	done
-
-
-
+	echo && echo "The End." && echo
 } # end function
 
 ########################################################
 # interactively remove (or not) each package file
-function remove_pkg_files() {	
-
+function remove_pkg_files() {
 	for file in "${downloads_dir}"/*
 	do
 		if [[ $file =~ $pkg_file_regex ]] || [[ $file =~ $pkg_sig_file_regex ]]
 		then
 			while : 
 			do
-				msg0="Found an old package file: ${file##*/}"
-				msg1="Delete it? [Y/n]"
-				lib10k_get_user_response "$msg0" "$msg1"
+				msg0="Found an old package file:" && echo
+				echo "$msg0" && echo
+				#echo "${file##*/}" && echo
+				echo "${file}" && echo
+				# Get user permission to proceed...
+				question_string='Delete this old package file? Enter Number'
+				responses_string='Yes(Delete) No(Keep)'
+				get_user_binary_exclusive_response "$question_string" "$responses_string"
 				user_response_code="$?"
-				[ "$user_response_code" -eq 2 ] && rm "$file" && break # yes; break while
-				[ "$user_response_code" -eq 3 ] &&  break # no; break while
+				# affirmative case
+				[ "$user_response_code" -eq 1 ] && echo && echo "Deleting..." && echo && rm "$file" && break
+				# negative case || unexpected case
+				[ "$user_response_code" -ne 1 ] &&  break
 			done
 		fi
 	done
@@ -45,11 +51,8 @@ function remove_pkg_files() {
 
 ########################################################
 #
-function reconnect_expressvpn() {
-	
-	sudo systemctl restart NetworkManager.service
-	
-
+function reconnect_expressvpn() {	
+	sudo systemctl restart NetworkManager.service	
 } # end function
 
 ########################################################
