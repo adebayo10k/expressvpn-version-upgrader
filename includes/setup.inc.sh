@@ -1,13 +1,13 @@
 #!/bin/bash
 # This module is responsible for creating a condition from which \
-# a subsequent package installation can take place.
+# a dev may decide whether or not to install an available package.
 ########################################################
 function check_for_installed_public_key() {
 	gpg --list-key | grep "release@expressvpn.com" >/dev/null 2>&1
 	[ $? -ne 0 ] && \
 	msg="IMPORTANT! The expressvpn Public Key MUST be installed. See https://www.expressvpn.com/support/vpn-setup/pgp-for-linux/" && \
 	lib10k_exit_with_error "$E_REQUIRED_FILE_NOT_FOUND" "$msg"
-} 
+}
 
 function get_user_platform_choice() {
 	#
@@ -111,7 +111,37 @@ function os_not_tested() {
 	esac
 }
 
-# scrape the latest#linux webpage
+# If package information is available from apt-cache...
+function get_currently_installed_pkg_version(){
+
+	if [ $user_selected_os_platform = 'Ubuntu_64_bit' ]
+	then
+		if ( which apt >/dev/null 2>&1 )
+		then
+			echo "which apt returned true"
+			apt_query=$(apt-cache show expressvpn 2>/dev/null)
+		else
+			echo "which apt returned false"
+		fi
+
+		if [ -n "$apt_query" ]
+		then
+			echo "apt_query string was non-zero"
+			apt_pkg_version=$(echo $apt_query | sed 's/.*\(Version\)/\1/; s/\(Version:\ [0-9\.-]*\).*/\1/')
+		else
+			echo "apt_query string was non-zero"
+		fi
+
+		if [[ $apt_pkg_version =~ ^Version:[[:blank:]]+[0-9\.-]*$ ]]
+		then
+			echo "Currently Installed: $apt_pkg_version" && echo
+		else
+			echo "apt_pkg_version did NOT match the regex"
+		fi
+	fi
+}
+
+# query the latest#linux webpage
 function get_available_pkg_file_url() {
 
 	# filter-in the latest package file URL from the expressvpn linux downloads landing page.

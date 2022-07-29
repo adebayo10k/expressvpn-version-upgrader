@@ -63,6 +63,7 @@ function main(){
 	# user manually selects which ...
 	get_user_platform_choice
 	# retreive the url string for the latest package and compare with existing version.
+	get_currently_installed_pkg_version	
 	get_available_pkg_file_url
 	# user manually decides whether to continue with or abandon package installation.
 	get_user_pkg_download_decision
