@@ -66,9 +66,9 @@ function main(){
 	get_currently_installed_pkg_version	
 	#test_call_get_user_continue_response
 	get_available_pkg_file_url
-	# cURL the package file to the Downloads directory.
+	## cURL the package file to the Downloads directory.
 	download_pkg_file
-	# check whether there's exactly 1 package file available
+	# identify both package and package signature files
 	identify_downloaded_pkg_file
 	## then to verify its' signature against the expressvpn public key
 	verify_downloaded_pkg_file
@@ -82,8 +82,8 @@ function main(){
 	##==========================
 	# remove the downloaded file after installation
 	cleanup_and_revert
-	# try to restart expressvpn
-	reconnect_expressvpn
+	# try to restart the network by brute
+	#reconnect_expressvpn
 
 } # end main
 
@@ -91,54 +91,5 @@ function main(){
 ####  FUNCTION DECLARATIONS  
 ##############################
 
-# passed a question and possible responses
-# returns a user_response_num integer
-# expect 2 incoming params, (not assumed):
-# A single string for the question.
-# A single string for exactly two IFS separated responses.
-function get_user_binary_exclusive_response() {
-	# check number of parameters
-	if [ $# -ne 2 ]
-	then
-		msg="Incorrect number of params passed to function."
-		lib10k_exit_with_error "$E_INCORRECT_NUMBER_OF_ARGS" "$msg"
-	fi
-	# assign parameters to variables
-	question_string="$1"
-	responses_string="$2"
-
-	# expand and separate the responses into array elements
-	response_list=( $responses_string )
-
-	# regardless of context-specific response strings, it's always:
-	# user_response_num 1==affirmative; 2==negative
-	user_response_num=''
-	PS3="$question_string : "
-	select response in ${response_list[@]}
-	do
-		# type error case
-		if [[ ! $REPLY =~ ^[0-9]{1}$ ]] 
-		then
-			echo && echo "No option selected. Integer [1 - ${#response_list[@]}] Required. Try Again." && echo
-			continue
-		# out of bounds integer error case
-		elif [ $REPLY -lt 1 ] || [ $REPLY -gt ${#response_list[@]} ]
-		then
-			echo && echo "Invalid selection. Integer [1 - ${#response_list[@]}] Required. Try Again." && echo
-			continue
-		# valid integer case
-		elif [ $REPLY -ge 1 ] && [ $REPLY -le ${#response_list[@]} ] 
-		then		
-			echo && echo "You Selected : ${response}"
-			user_response_num="${REPLY}"
-			break
-		# unexpected, failsafe case
-		else		
-			msg="Unexpected branch entered!"
-			lib10k_exit_with_error "$E_UNEXPECTED_BRANCH_ENTERED" "$msg"
-		fi
-	done
-	return "$user_response_num"	
-} 
 
 main "$@"; exit $?

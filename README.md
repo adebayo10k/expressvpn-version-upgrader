@@ -91,9 +91,9 @@ Nothing to do with this project, but I've also configured my cron table with thi
 ```
 
 ## Parameters
-
-None.
-
+``` bash
+expressvpn-version-upgrader.sh [dev|help]
+```
 
 ## Running the Script
 

@@ -62,48 +62,36 @@ function get_user_platform_choice() {
 function os_not_tested() {
 	run_mode=${run_mode:-'default'}
 	os_advisory0="This program has not been tested on the \"$platform\" OS platform."
-	os_advisory1="Read the source, extend and test if you wish."
-	os_advisory2="This program is an interesting workaround, but cannot be relied upon in any sort of production environment."
+	#os_advisory1="Read the source, extend and test if you wish."
+	#os_advisory2="This program is an interesting workaround, but cannot be relied upon in any sort of production environment."
 
 	case $user_selected_os_platform in
 	"Ubuntu_64_bit") 
 		if [ -n $run_mode ] && [ $run_mode != 'dev' ]
 		then
-			echo && echo 
-			echo "$os_advisory1"
-			echo "$os_advisory2" 
-			echo && exit 0
+			echo "$os_advisory0" && echo 	 
+			echo && usage
 		fi
 		;;
 	"Ubuntu_32_bit")
-		echo && echo "$os_advisory0"
-		echo "$os_advisory1"
-		echo "$os_advisory2" 
-		echo && exit 0
+		echo "$os_advisory0" && echo 
+		echo && usage
 		;;
 	"Fedora_64_bit")
-		echo && echo "$os_advisory0"
-		echo "$os_advisory1"
-		echo "$os_advisory2" 
-		echo && exit 0
+		echo "$os_advisory0" && echo 
+		echo && usage
 		;;
 	"Fedora_32_bit")
-		echo && echo "$os_advisory0"
-		echo "$os_advisory1"
-		echo "$os_advisory2" 
-		echo && exit 0
+		echo "$os_advisory0" && echo 
+		echo && usage
 		;;
 	"Arch_64_bit")
-		echo && echo "$os_advisory0"
-		echo "$os_advisory1"
-		echo "$os_advisory2" 
-		echo && exit 0
+		echo "$os_advisory0" && echo 
+		echo && usage
 		;;
 	"Raspberry_Pi_OS")
-		echo && echo "$os_advisory0" 
-		echo "$os_advisory1"
-		echo "$os_advisory2"
-		echo && exit 0
+		echo "$os_advisory0" && echo 
+		echo && usage
 		;;
 	*) msg="We shouldn't be here!"
 		lib10k_exit_with_error "$E_UNEXPECTED_BRANCH_ENTERED" "$msg"
@@ -185,10 +173,12 @@ function get_available_pkg_file_url() {
 	then
 		echo "Available version URL:"
 		echo "$pkg_file_url" && echo
+		# detatched signature file
+		pkg_sig_file_url="${pkg_file_url}.asc"
 		# get users' decision whether to progress from here
-		question_string='Download and Verify this package? Enter Number'
-		responses_string='Yes(Continue) No(Quit)'
-		get_user_binary_exclusive_response "$question_string" "$responses_string"
+		question_string='Download and Verify this package? Choose an option'
+		responses_string='Yes, Download and Verify|No, Quit the Program'
+		get_user_response "$question_string" "$responses_string"
 		user_response_code="$?"
 		# affirmative case
 		if [ "$user_response_code" -eq 1 ]; then
@@ -205,9 +195,7 @@ function get_available_pkg_file_url() {
 
 ########################################################
 # download package installation and package signature files
-function download_pkg_file() {
-	# detatched signature file
-	pkg_sig_file_url="${pkg_file_url}.asc"
+function download_pkg_file() {	
 	cd "$downloads_dir" && \
 	curl -OL "$pkg_file_url" >/dev/stdout && \
 	curl -sOL "$pkg_sig_file_url"
@@ -251,11 +239,11 @@ function verify_downloaded_pkg_file(){
 	gpg --verify "${identified_pkg_file}.asc" "$identified_pkg_file"
 	if [ $? -eq 0 ]
 	then
-		echo && echo "GPG VERIFICATION SUCCESSFUL. CONFIRM VISUALLY ANYWAY..." && echo
+		echo && echo -e "\e[32mGPG VERIFICATION SUCCESSFUL.\e[0m CONFIRM VISUALLY ANYWAY..." && echo
 		# Get user permission to proceed...
-		question_string='Confirm? Do you see "Good signature"? Enter Number'
-		responses_string='Yes(Confirmed) No(Quit)'
-		get_user_binary_exclusive_response "$question_string" "$responses_string"
+		question_string='Confirm? Do you see "Good signature"? Choose an option'
+		responses_string='Yes, Confirmed|No, Quit the Program'
+		get_user_response "$question_string" "$responses_string"
 		user_response_code="$?"
 		# affirmative case
 		if [ "$user_response_code" -eq 1 ]; then

@@ -2,9 +2,9 @@
 # This module is responsible for completing a package installation.
 function install_package(){
 	# Get user permission to proceed...
-	question_string='Proceed with Package Installation? (requires sudo). Enter Number'
-	responses_string='Yes(Install) No(Quit)'
-	get_user_binary_exclusive_response "$question_string" "$responses_string"
+	question_string='Proceed with Package Installation? (requires sudo). Choose and option'
+	responses_string='Yes, Install|No, Quit the Program'
+	get_user_response "$question_string" "$responses_string"
 	user_response_code="$?"
 	# affirmative case
 	if [ "$user_response_code" -eq 1 ]; then
