@@ -60,8 +60,14 @@ function main(){
 	#==========================
 	# no point going further if this state ...
 	check_for_installed_public_key
+
+	# CALLS TO FUNCTIONS DECLARED IN controller.inc.sh
+	#==========================
 	# user manually selects which ...
 	get_user_platform_choice
+
+	# CALLS TO FUNCTIONS DECLARED IN setup.inc.sh
+	#==========================
 	# retreive the url string for the latest package and compare with existing version.
 	get_currently_installed_pkg_version	
 	#test_call_get_user_continue_response
@@ -83,13 +89,8 @@ function main(){
 	# remove the downloaded file after installation
 	cleanup_and_revert
 	# try to restart the network by brute
-	#reconnect_expressvpn
+	reconnect_expressvpn
 
 } # end main
-
-##############################
-####  FUNCTION DECLARATIONS  
-##############################
-
 
 main "$@"; exit $?
