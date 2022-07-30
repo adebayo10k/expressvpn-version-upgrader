@@ -191,9 +191,12 @@ function get_available_pkg_file_url() {
 		get_user_binary_exclusive_response "$question_string" "$responses_string"
 		user_response_code="$?"
 		# affirmative case
-		[ "$user_response_code" -eq 1 ] && echo && echo "Downloading and Verifying..." && echo
-		# negative case || unexpected case
-		[ "$user_response_code" -ne 1 ] && exit 0
+		if [ "$user_response_code" -eq 1 ]; then
+			echo && echo "Downloading and Verifying..." && echo
+		else
+			# negative case || unexpected case
+			exit 0
+		fi
 	else
 		msg="Could not download a VALID package file URL string from web. Exiting now..."
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
@@ -255,9 +258,12 @@ function verify_downloaded_pkg_file(){
 		get_user_binary_exclusive_response "$question_string" "$responses_string"
 		user_response_code="$?"
 		# affirmative case
-		[ "$user_response_code" -eq 1 ] && echo && echo "Continuing..." && echo
-		# negative case || unexpected case
-		[ "$user_response_code" -ne 1 ] && exit 0
+		if [ "$user_response_code" -eq 1 ]; then
+			echo && echo "Continuing..." && echo
+		else
+			# negative case || unexpected case
+			exit 0
+		fi
 	else
 		msg="GPG SIGNATURE VERIFICATION FAILED!"
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"

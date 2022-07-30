@@ -7,10 +7,13 @@ function install_package(){
 	get_user_binary_exclusive_response "$question_string" "$responses_string"
 	user_response_code="$?"
 	# affirmative case
-	[ "$user_response_code" -eq 1 ] && echo && echo "Installing..." && echo
-	# negative case || unexpected case
-	[ "$user_response_code" -ne 1 ] && exit 0
-
+	if [ "$user_response_code" -eq 1 ]; then
+		echo && echo "Installing..." && echo
+	else
+		# negative case || unexpected case
+		exit 0
+	fi
+	
 	sudo dpkg -i $verified_pkg_file
 	return_code=$?;
 	if [ $return_code -eq 0 ]
