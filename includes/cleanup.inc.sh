@@ -16,6 +16,10 @@ function cleanup_and_revert() {
 		remove_pkg_files
 	fi
 
+	# cd back to the original program shell directory
+	if [ -n "$original_dir" ] && (cd "$original_dir" >/dev/null 2>&1); then
+		cd "$original_dir" >/dev/null 2>&1
+	fi
 	echo && echo "The End." && echo
 } # end function
 
@@ -46,9 +50,15 @@ function remove_pkg_files() {
 } # end function
 
 ########################################################
-#
-function reconnect_expressvpn() {	
-	sudo systemctl restart NetworkManager.service	
+# this function can only be based on your own specific configurations of:
+# - your network manager
+# - your expressvpn preferences
+# - ...
+function reconnect_expressvpn() {
+	:
+	# sudo systemctl restart NetworkManager.service
+	# nmcli ...
+	# expressvpn preferences set ...
 } # end function
 
 ########################################################

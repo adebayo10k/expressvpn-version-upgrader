@@ -15,7 +15,7 @@ function get_currently_installed_pkg_version(){
 	then
 		if ( which apt >/dev/null 2>&1 )
 		then
-			echo "which apt returned true"
+			#echo "which apt returned true"
 			apt_query=$(apt-cache show expressvpn 2>/dev/null)
 		else
 			echo "which apt returned false"
@@ -23,10 +23,10 @@ function get_currently_installed_pkg_version(){
 
 		if [ -n "$apt_query" ]
 		then
-			echo "apt_query string was non-zero"
+			#echo "apt_query string was non-zero length"
 			apt_pkg_version=$(echo $apt_query | sed 's/.*\(Version\)/\1/; s/\(Version:\ [0-9\.-]*\).*/\1/')
 		else
-			echo "apt_query string was non-zero"
+			echo "apt_query string was NOT non-zero length"
 		fi
 
 		if [[ $apt_pkg_version =~ ^Version:[[:blank:]]+[0-9\.-]*$ ]]
@@ -106,12 +106,21 @@ function get_available_pkg_file_url() {
 ########################################################
 # download package installation and package signature files
 function download_pkg_file() {	
-	cd "$downloads_dir" && \
+	# test in a subshell, then cd 'for real' in program shell
+	original_dir=$(pwd 2>/dev/null)
+	if (cd "$downloads_dir" 2>/dev/null); then
+		cd "$downloads_dir" 2>/dev/null
+		#original_dir=$(cd - 2>/dev/null)
+	else
+		msg="Failed to change program directory to downloads_dir"
+		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
+	fi
+
 	curl -OL "$pkg_file_url" >/dev/stdout && \
 	curl -sOL "$pkg_sig_file_url"
 	if [ $? -ne 0 ]
 	then
-		msg="cURL FAIL"
+		msg="cURL Fail"
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
 	fi
 } # end function

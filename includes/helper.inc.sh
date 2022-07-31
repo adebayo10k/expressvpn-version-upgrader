@@ -21,8 +21,8 @@ function check_all_program_conditions() {
 	# validate program parameters
 	validate_program_args
 	[ $? -eq 0 ] || usage
-	# check program dependencies
-	lib10k_check_program_requirements "${program_dependencies[@]}"
+	# check program dependencies, exit 1 if can't even do that
+	lib10k_check_program_dependencies "${program_dependencies[@]}" || exit 1
 }
 
 # 

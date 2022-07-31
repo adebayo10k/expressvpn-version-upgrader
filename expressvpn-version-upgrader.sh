@@ -81,7 +81,7 @@ function main(){
 #
 	## CALLS TO FUNCTIONS DECLARED IN pkg-installation.inc.sh
 	##==========================
-	# do the installation
+	#do the installation
  	install_package
 #
 	## CALLS TO FUNCTIONS DECLARED IN cleanup.inc.sh
