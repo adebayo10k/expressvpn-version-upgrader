@@ -43,7 +43,7 @@ The program completes the package version update from the command line in just a
 
 ## Dependencies
 
-("expressvpn" "gpg" "dpkg" "curl" "nmcli")
+("expressvpn" "gpg" "dpkg" "curl")
 
 Unless part of the default Ubuntu Desktop build, the programs I chose to do the work of downloading files etc. are the ones I prefer to use.
 

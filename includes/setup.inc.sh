@@ -11,7 +11,7 @@ function check_for_installed_public_key() {
 
 # Try to get package information from apt-cache...
 function get_currently_installed_pkg_version(){
-	if [ $user_selected_os_platform = 'Ubuntu_64_bit' ]
+	if [ $user_selected_os_platform = 'Ubuntu_64_bit' ] || [ $user_selected_os_platform = 'Raspberry_Pi_OS' ]
 	then
 		if ( which apt >/dev/null 2>&1 )
 		then

@@ -134,8 +134,11 @@ function os_not_tested() {
 		echo && usage
 		;;
 	"Raspberry_Pi_OS")
-		echo "$os_advisory0" && echo 
-		echo && usage
+		if [ -n $run_mode ] && [ $run_mode != 'dev' ]
+		then
+			echo "$os_advisory0" && echo 	 
+			echo && usage
+		fi
 		;;
 	*) msg="We shouldn't be here!"
 		lib10k_exit_with_error "$E_UNEXPECTED_BRANCH_ENTERED" "$msg"

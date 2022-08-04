@@ -16,7 +16,7 @@ run_mode=${1:-''}
 
 #
 function check_all_program_conditions() {
-	local program_dependencies=("expressvpn" "gpg" "dpkg" "curl" "nmcli")
+	local program_dependencies=("expressvpn" "gpg" "dpkg" "curl")
 	lib10k_check_no_of_program_args
 	# validate program parameters
 	validate_program_args
