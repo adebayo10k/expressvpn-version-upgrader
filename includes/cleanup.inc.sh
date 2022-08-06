@@ -31,8 +31,8 @@ function remove_pkg_files() {
 		if [[ $file =~ $pkg_file_regex ]] || [[ $file =~ $pkg_sig_file_regex ]]
 		then
 			msg0="Found an old package file:"
-			echo &&	echo "$msg0"
-			echo && echo "${file}" && echo
+			echo &&	echo -e "${BLUE}${msg0}${NC}"
+			echo && echo -e "${BLUE}${file}${NC}" && echo
 			# Get user permission to proceed...
 			question_string='Delete this old package file? Choose an option'
 			responses_string='Yes, Delete|No, Keep'

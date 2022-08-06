@@ -111,24 +111,24 @@ function os_not_tested() {
 	'Ubuntu_64_bit'|'Raspberry_Pi_OS') 
 		if [ -n $run_mode ] && [ $run_mode != 'dev' ]
 		then
-			echo "$os_advisory0" && echo 	 
+			echo -e "${BROWN}${os_advisory0}${NC}" && echo 	 
 			echo && usage
 		fi
 		;;
 	"Ubuntu_32_bit")
-		echo "$os_advisory0" && echo 
+		echo -e "${BROWN}${os_advisory0}${NC}" && echo 
 		echo && usage
 		;;
 	"Fedora_64_bit")
-		echo "$os_advisory0" && echo 
+		echo -e "${BROWN}${os_advisory0}${NC}" && echo 
 		echo && usage
 		;;
 	"Fedora_32_bit")
-		echo "$os_advisory0" && echo 
+		echo -e "${BROWN}${os_advisory0}${NC}" && echo 
 		echo && usage
 		;;
 	"Arch_64_bit")
-		echo "$os_advisory0" && echo 
+		echo -e "${BROWN}${os_advisory0}${NC}" && echo 
 		echo && usage
 		;;
 	*) msg="We shouldn't be here!"

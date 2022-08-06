@@ -31,7 +31,7 @@ function get_currently_installed_pkg_version(){
 
 		if [[ $apt_pkg_version =~ ^Version:[[:blank:]]+[0-9\.-]*$ ]]
 		then
-			echo "Currently Installed: $apt_pkg_version" && echo
+			echo -e "${BLUE}Currently Installed ${apt_pkg_version}${NC}" && echo
 		else
 			echo "apt_pkg_version did NOT match the regex"
 		fi
@@ -81,8 +81,8 @@ function get_available_pkg_file_url() {
 	# test the url string value from the https response:
 	if [ -n $pkg_file_url ] && [[ $pkg_file_url =~ $BASIC_URL_REGEX/$REL_FILEPATH_REGEX ]]
 	then
-		echo "Available version URL:"
-		echo "$pkg_file_url" && echo
+		echo -e "${BLUE}Available Version URL:"
+		echo -e "$pkg_file_url${NC}" && echo
 		# detatched signature file
 		pkg_sig_file_url="${pkg_file_url}.asc"
 		# get users' decision whether to progress from here
@@ -133,7 +133,7 @@ function identify_downloaded_pkg_file(){
 	do
 		if [[ $file =~ $pkg_file_regex ]] && [[ ${file##*/} = ${pkg_file_url##*/} ]]
 		then
-			echo && echo "Found a Package Installation file: ${file}"
+			echo && echo -e "${BLUE}Found a Package Installation file: ${file}${NC}"
 			identified_pkg_file="$file"
 		fi
 	done
@@ -143,7 +143,7 @@ function identify_downloaded_pkg_file(){
 	do
 		if [[ $file =~ $pkg_sig_file_regex ]] && [[ ${file##*/} = ${pkg_sig_file_url##*/} ]]
 		then
-			echo && echo "Found a Package Signature file: ${file}" && echo
+			echo && echo -e "${BLUE}Found a Package Signature file: ${file}${NC}" && echo
 			identified_pkg_sig_file="$file"
 		fi
 	done
@@ -153,12 +153,12 @@ function identify_downloaded_pkg_file(){
 # gpg verify signature of identified package file
 function verify_downloaded_pkg_file(){
 	# Now to verify the downloaded package file using an existing expressvpn public key
-	echo && echo -e "\e[32mNow checking package file against expressvpn public key...\e[0m" && echo
+	echo && echo -e "${GREEN}Now checking package file against expressvpn public key...${NC}" && echo
 	gpg --fingerprint release@expressvpn.com
 	gpg --verify "${identified_pkg_file}.asc" "$identified_pkg_file"
 	if [ $? -eq 0 ]
 	then
-		echo && echo -e "\e[32mGPG VERIFICATION SUCCESSFUL.\e[0m CONFIRM VISUALLY ANYWAY..." && echo
+		echo && echo -e "${GREEN}GPG VERIFICATION SUCCESSFUL.${NC} CONFIRM VISUALLY ANYWAY..." && echo
 		# Get user permission to proceed...
 		question_string='Confirm? Do you see "Good signature"? Choose an option'
 		responses_string='Yes, Confirmed|No, Quit the Program'

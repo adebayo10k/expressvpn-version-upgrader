@@ -18,7 +18,7 @@ function install_package(){
 	return_code=$?;
 	if [ $return_code -eq 0 ]
 	then
-		echo && echo -e "\e[32mTHE UPGRADE WAS SUCCESSFUL.\e[0m" && echo
+		echo && echo -e "${GREEN}THE UPGRADE WAS SUCCESSFUL.${NC}" && echo
 	else
 		msg="The install (dpkg -i) command FAILED. Exiting now..."
 		lib10k_exit_with_error "$E_UNKNOWN_ERROR" "$msg"
