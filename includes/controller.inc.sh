@@ -106,11 +106,9 @@ function get_user_platform_choice() {
 function os_not_tested() {
 	run_mode=${run_mode:-'default'}
 	os_advisory0="This program has not been tested on the \"$platform\" OS platform."
-	#os_advisory1="Read the source, extend and test if you wish."
-	#os_advisory2="This program is an interesting workaround, but cannot be relied upon in any sort of production environment."
-
+    
 	case $user_selected_os_platform in
-	"Ubuntu_64_bit") 
+	'Ubuntu_64_bit'|'Raspberry_Pi_OS') 
 		if [ -n $run_mode ] && [ $run_mode != 'dev' ]
 		then
 			echo "$os_advisory0" && echo 	 
@@ -132,13 +130,6 @@ function os_not_tested() {
 	"Arch_64_bit")
 		echo "$os_advisory0" && echo 
 		echo && usage
-		;;
-	"Raspberry_Pi_OS")
-		if [ -n $run_mode ] && [ $run_mode != 'dev' ]
-		then
-			echo "$os_advisory0" && echo 	 
-			echo && usage
-		fi
 		;;
 	*) msg="We shouldn't be here!"
 		lib10k_exit_with_error "$E_UNEXPECTED_BRANCH_ENTERED" "$msg"
