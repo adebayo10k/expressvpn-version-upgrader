@@ -5,9 +5,6 @@
 #########################
 # GLOBAL VARIABLE DECLARATIONS:
 #########################
-declare -i max_expected_no_of_program_parameters=1
-declare -i min_expected_no_of_program_parameters=0
-declare -ir actual_no_of_program_parameters=$#
 run_mode=${1:-''}
 
 #########################
@@ -17,7 +14,6 @@ run_mode=${1:-''}
 #
 function check_all_program_conditions() {
 	local program_dependencies=("expressvpn" "gpg" "dpkg" "curl")
-	lib10k_check_no_of_program_args
 	# validate program parameters
 	validate_program_args
 	[ $? -eq 0 ] || usage
@@ -27,7 +23,7 @@ function check_all_program_conditions() {
 
 # 
 function validate_program_args() {
-	[ -z "$run_mode" ] && return 0
+	[ -z "$run_mode" ] && return 1
 	[ -n "$run_mode" ] && [ $run_mode = 'dev' ] && return 0
 	[ -n "$run_mode" ] && [ $run_mode = 'help' ] && return 1
 	[ -n "$run_mode" ] && return 1
