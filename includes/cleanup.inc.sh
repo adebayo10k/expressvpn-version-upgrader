@@ -7,7 +7,7 @@
 function cleanup_and_revert() {
 	# Get user permission to proceed...
 	question_string='Interactively Delete old Package and Signature file downloads? (recommended). Choose an option'
-	responses_string='Yes, start Interative Delete|No, Skip'
+	responses_string='Yes, start Interactive Delete|No, Skip'
 	get_user_response "$question_string" "$responses_string"
 	user_response_code="$?"
 	# affirmative case
