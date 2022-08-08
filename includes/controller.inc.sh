@@ -24,7 +24,8 @@ function get_user_response() {
 	response_list=( $responses_string )
 
 	user_response_num=''
-	PS3="$question_string : "
+    PS3="> "
+    echo "$question_string : " && echo
 	select response in ${response_list[@]}
 	do
 		# type error case
@@ -55,8 +56,8 @@ function get_user_response() {
 
 function get_user_platform_choice() {
 	#
-	PS3='Select your OS Platform to check online for VPN client updates (or choose None): '
-
+    echo 'Select your OS Platform to check online for VPN client updates (or choose None): ' && echo
+    PS3="> "
 	select platform in ${os_platforms[@]} 'None'
 	do
 		case $platform in 
