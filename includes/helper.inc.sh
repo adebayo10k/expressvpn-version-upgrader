@@ -7,6 +7,13 @@
 #########################
 run_mode=${1:-''} # run_mode is always set
 
+if [ -n "$run_mode" ]
+then
+    echo "NON-ZERO LENGTH"
+else
+     echo "NON-ZERO LENGTH"
+fi
+
 #########################
 # FUNCTION DECLARATIONS:
 #########################
@@ -26,6 +33,7 @@ function validate_program_args() {
     local run_mode="$1"
 	[ -z "$run_mode" ] && return 1
     [ -n "$run_mode" ] && [[ "$run_mode" =~ ^[[:blank:]]+$ ]] && return 1
+    [ -n "$run_mode" ] && [[ ! $run_mode =~ ^[A-Za-z0-9\.\/_\-]+$ ]] && return 1
 	[ -n "$run_mode" ] && [ $run_mode = 'dev' ] && return 0
 	[ -n "$run_mode" ] && [ $run_mode = 'help' ] && return 1
 	[ -n "$run_mode" ] && return 1
