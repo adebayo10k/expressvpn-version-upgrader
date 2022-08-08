@@ -55,7 +55,7 @@ function get_user_response() {
 } 
 
 function get_user_platform_choice() {
-	#
+	local os_platforms=( "$@" )
     echo 'Select your OS Platform to check online for VPN client updates (or choose None): ' && echo
     PS3="> "
 	select platform in ${os_platforms[@]} 'None'
@@ -101,12 +101,13 @@ function get_user_platform_choice() {
 		esac
 	done
 
-	os_not_tested
+	os_not_tested "$user_selected_os_platform"
 }
 
 function os_not_tested() {
-	run_mode=${run_mode:-'default'}
-	os_advisory0="This program has not been tested on the \"$platform\" OS platform."
+    local user_selected_os_platform="$1"
+	local run_mode=${run_mode:-'default'}
+	os_advisory0="This program has not been tested on the \"$user_selected_os_platform\" OS platform."
     
 	case $user_selected_os_platform in
 	'Ubuntu_64_bit'|'Raspberry_Pi_OS') 

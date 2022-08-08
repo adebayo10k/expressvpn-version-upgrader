@@ -1,6 +1,7 @@
 #!/bin/bash
 # This module is responsible for completing a package installation.
 function install_package(){
+    local verified_pkg_file="$1"
 	# Get user permission to proceed...
 	question_string='Proceed with Package Installation? (requires sudo). Choose and option'
 	responses_string='Yes, Install|No, Quit the Program'

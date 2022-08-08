@@ -11,6 +11,7 @@ function check_for_installed_public_key() {
 
 # Try to get package information from apt-cache...
 function get_currently_installed_pkg_version(){
+    local user_selected_os_platform="$1"
 	if [ $user_selected_os_platform = 'Ubuntu_64_bit' ] || [ $user_selected_os_platform = 'Raspberry_Pi_OS' ]
 	then
 		if ( which apt >/dev/null 2>&1 )
@@ -40,7 +41,7 @@ function get_currently_installed_pkg_version(){
 
 # query the latest#linux webpage
 function get_available_pkg_file_url() {
-
+    local user_selected_os_platform="$1"
 	# filter-in the latest package file URL from the expressvpn linux downloads landing page.
 	case $user_selected_os_platform in
 		'Ubuntu_64_bit') #Ubuntu 64-bit
@@ -105,7 +106,10 @@ function get_available_pkg_file_url() {
 
 ########################################################
 # download package installation and package signature files
-function download_pkg_file() {	
+function download_pkg_file() {
+    local pkg_file_url="$1"
+    local pkg_sig_file_url="$2"
+    local downloads_dir="$3"
 	# test in a subshell, then cd 'for real' in program shell
 	original_dir=$(pwd 2>/dev/null)
 	if (cd "$downloads_dir" 2>/dev/null); then
@@ -128,6 +132,11 @@ function download_pkg_file() {
 ########################################################
 # identify both package installation and package signature files
 function identify_downloaded_pkg_file(){
+    local pkg_file_url="$1"
+    local pkg_sig_file_url="$2"
+    local downloads_dir="$3"
+    local pkg_file_regex="$4"
+    local pkg_sig_file_regex="$5"
 	# identified_pkg_file must match both the general pkg_file_regex and specific pkg_file_url just requested
 	for file in "${downloads_dir}"/*
 	do
@@ -152,10 +161,12 @@ function identify_downloaded_pkg_file(){
 ########################################################
 # gpg verify signature of identified package file
 function verify_downloaded_pkg_file(){
+    local identified_pkg_file="$1"
+    local identified_pkg_sig_file="$2"
 	# Now to verify the downloaded package file using an existing expressvpn public key
 	echo && echo -e "${GREEN}Now checking package file against expressvpn public key...${NC}" && echo
 	gpg --fingerprint release@expressvpn.com
-	gpg --verify "${identified_pkg_file}.asc" "$identified_pkg_file"
+	gpg --verify "$identified_pkg_sig_file" "$identified_pkg_file"
 	if [ $? -eq 0 ]
 	then
 		echo && echo -e "${GREEN}GPG VERIFICATION SUCCESSFUL.${NC} CONFIRM VISUALLY ANYWAY..." && echo

@@ -49,8 +49,11 @@ function main(){
 	# GLOBAL VARIABLE DECLARATIONS:
 	#########################		
 	pkg_file_url=
+    pkg_sig_file_url=
 	identified_pkg_file=
+    identified_pkg_sig_file=
 	verified_pkg_file=
+    original_dir=
 
 	#########################
 	# FUNCTION CALLS:
@@ -64,30 +67,30 @@ function main(){
 	# CALLS TO FUNCTIONS DECLARED IN controller.inc.sh
 	#==========================
 	# user manually selects which ...
-	get_user_platform_choice
+	get_user_platform_choice "${os_platforms[@]}"
 
 	# CALLS TO FUNCTIONS DECLARED IN setup.inc.sh
 	#==========================
 	# retreive the url string for the latest package and compare with existing version.
-	get_currently_installed_pkg_version	
+	get_currently_installed_pkg_version	"$user_selected_os_platform"
 	#test_call_get_user_continue_response
-	get_available_pkg_file_url
+	get_available_pkg_file_url	"$user_selected_os_platform"
 	## cURL the package file to the Downloads directory.
-	download_pkg_file
+	download_pkg_file "$pkg_file_url" "$pkg_sig_file_url" "$downloads_dir"
 	# identify both package and package signature files
-	identify_downloaded_pkg_file
+	identify_downloaded_pkg_file "$pkg_file_url" "$pkg_sig_file_url" "$downloads_dir" "$pkg_file_regex" "$pkg_sig_file_regex"
 	## then to verify its' signature against the expressvpn public key
-	verify_downloaded_pkg_file
+	verify_downloaded_pkg_file "$identified_pkg_file" "$identified_pkg_sig_file"
 #
 	## CALLS TO FUNCTIONS DECLARED IN pkg-installation.inc.sh
 	##==========================
 	#do the installation
- 	install_package
+ 	install_package "$verified_pkg_file"
 #
 	## CALLS TO FUNCTIONS DECLARED IN cleanup.inc.sh
 	##==========================
-	# remove the downloaded file after installation
-	cleanup_and_revert
+	# remove the downloaded files after installation
+	cleanup_and_revert "$original_dir" "$downloads_dir" "$pkg_file_regex" "$pkg_sig_file_regex"
 	# try to restart the network by brute
 	reconnect_expressvpn
 
