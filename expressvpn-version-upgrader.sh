@@ -42,7 +42,7 @@ fi
 
 # CALLS TO FUNCTIONS DECLARED IN helper.inc.sh
 #==========================
-check_all_program_conditions
+check_all_program_preconditions
 
 function main(){
 	#########################
