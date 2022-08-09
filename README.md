@@ -119,15 +119,36 @@ I decided that this program would not permit package installation without succes
 
 When testing, the output you should see once you download the package should be something like this...
 ```
-Want to download the package and signature files? If not just terminate this program...
-Enter q to quit program NOW, or just press ENTER to continue.
+Select your OS Platform to check online for VPN client updates (or choose None): 
 
+1) Ubuntu_64_bit    3) Fedora_64_bit	5) Arch_64_bit	    7) None
+2) Ubuntu_32_bit    4) Fedora_32_bit	6) Raspberry_Pi_OS
+> 1
+
+You Selected the "Ubuntu_64_bit" OS platform.
+
+Currently Installed Version: 3.29.0.10-1
+
+Available Version URL:
+https://www.expressvpn.works/clients/linux/expressvpn_3.29.0.10-1_amd64.deb
+
+Download and Verify this package? Choose an option : 
+
+1) Yes, Download and Verify
+2) No, Quit the Program
+> 1
+
+You Selected : Yes, Download and Verify
+
+Downloading and Verifying...
 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
-100 18.5M  100 18.5M    0     0  2116k      0  0:00:08  0:00:08 --:--:-- 2634k
+100 18.5M  100 18.5M    0     0  4121k      0  0:00:04  0:00:04 --:--:-- 4507k
 
-Found an expressvpn package file: /home/user/Downloads/expressvpn_3.28.0.6-1_amd64.deb
+Found a Package Installation file: /home/user/Downloads/expressvpn_3.29.0.10-1_amd64.deb
+
+Found a Package Signature file: /home/user/Downloads/expressvpn_3.29.0.10-1_amd64.deb.asc
 
 
 Now checking package file against expressvpn public key...
@@ -137,16 +158,32 @@ pub   rsa4096 2016-01-22 [SC]
 uid           [ unknown] ExpressVPN Release <release@expressvpn.com>
 sub   rsa4096 2016-01-22 [E]
 
-gpg: Signature made Thu 07 Jul 2022 04:09:39 BST
+gpg: Signature made Fri 29 Jul 2022 01:49:39 BST
 gpg:                using RSA key 1D0B09AD6C93FEE93FDDBD9DAFF2A1415F6A3A38
 gpg: Good signature from "ExpressVPN Release <release@expressvpn.com>" [unknown]
 gpg: WARNING: This key is not certified with a trusted signature!
 gpg:          There is no indication that the signature belongs to the owner.
 Primary key fingerprint: 1D0B 09AD 6C93 FEE9 3FDD  BD9D AFF2 A141 5F6A 3A38
 
-GPG VERIFICATION PASSED OK, BUT AUTHORISE MANUALLY ANYWAY...
-Press ENTER to confirm a "Good signature"
-Enter q to quit program NOW, or just press ENTER to continue.
+GPG VERIFICATION SUCCESSFUL. CONFIRM VISUALLY ANYWAY...
+
+Confirm? Do you see "Good signature"? Choose an option : 
+
+1) Yes, Confirmed
+2) No, Quit the Program
+> 1
+
+You Selected : Yes, Confirmed
+
+Continuing...
+
+Proceed with Package Installation? (requires sudo). Choose and option : 
+
+1) Yes, Install
+2) No, Quit the Program
+> 2 
+
+You Selected : No, Quit the Program
 ```
 
 ## Logging
