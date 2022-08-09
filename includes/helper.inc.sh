@@ -7,17 +7,9 @@
 #########################
 run_mode=${1:-''} # run_mode is always set
 
-if [ -n "$run_mode" ]
-then
-    echo "NON-ZERO LENGTH"
-else
-     echo "NON-ZERO LENGTH"
-fi
-
 #########################
 # FUNCTION DECLARATIONS:
 #########################
-
 #
 function check_all_program_preconditions() {
 	local program_dependencies=("expressvpn" "gpg" "dpkg" "curl")
